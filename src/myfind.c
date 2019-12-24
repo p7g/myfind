@@ -10,6 +10,10 @@
 #include "options.h"
 #include "paths.h"
 
+#ifndef __GNUC__
+# define __attribute__(x)
+#endif
+
 static void __attribute__((noreturn)) usage()
 {
 	fprintf(stderr, "USAGE:\n\tmyfind DIR [OPTS]\n");
