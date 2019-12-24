@@ -19,53 +19,52 @@ int main(int argc, char *argv[])
 {
 	DIR *dirp;
 	struct dirent *dir;
-	dir_stack *stack;
-	char *joined, *current;
+	dir_stack *stack, *current;
+	char *joined;
 	struct args args;
 	struct stat statbuf;
 
+	stack = NULL;
+
 	if (parse_args(argc, argv, &args))
 		usage();
-
-	stack = dir_stack_new(args.directory);
 
 	if (-1 == stat(args.directory, &statbuf)) {
 		perror("stat");
 		return 1;
 	}
 
-	if (file_type_p(mask_from_mode_t(statbuf.st_mode), args.file_type))
-		printf("%s\n", args.directory);
-
-	if (!S_ISDIR(statbuf.st_mode))
-		return 0;
+	dir_stack_stat(&stack, args.directory, &statbuf);
 
 	while (stack) {
-		dirp = opendir(stack->name);
 		current = dir_stack_pop(&stack);
 
-		if (dirp == NULL) {
-			perror("opendir");
-			continue;
-		}
+		if (file_type_p(current->file_type, args.file_type))
+			printf("%s\n", current->name);
 
-		while ((dir = readdir(dirp))) {
-			joined = path_join(current, dir->d_name);
+		if (current->file_type & TYPE_DIR) {
+			dirp = opendir(current->name);
 
-			if (exclude_p(dir->d_name))
+			if (dirp == NULL) {
+				perror("opendir");
 				continue;
+			}
 
-			if (dir->d_type == DT_DIR)
-				dir_stack_push(&stack, joined);
+			while ((dir = readdir(dirp))) {
+				joined = path_join(current->name, dir->d_name);
 
-			if (file_type_p(dir->d_type, args.file_type))
-				printf("%s\n", joined);
+				if (exclude_p(dir->d_name))
+					continue;
 
-			free(joined);
+				dir_stack_dirent(&stack, joined, dir);
+
+				free(joined);
+			}
+
+			closedir(dirp);
 		}
 
-		free(current);
-		closedir(dirp);
+		dir_stack_free(current);
 	}
 
 	return 0;

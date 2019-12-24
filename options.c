@@ -35,36 +35,13 @@ static int parse_types(const char *types, struct args *args)
 	return 0;
 }
 
-int mask_from_mode_t(mode_t mode)
-{
-	switch (mode & S_IFMT) {
-		case S_IFDIR:
-			return TYPE_DIR;
-		case S_IFREG:
-			return TYPE_FILE;
-		case S_IFLNK:
-			return TYPE_LINK;
-	}
-
-	return 0;
-}
-
 int file_type_p(int type, int mask)
 {
 	/* If no options are specified, do no filtering */
 	if (!mask)
 		return 1;
 
-	switch (type) {
-		case DT_LNK:
-			return mask & TYPE_LINK;
-		case DT_REG:
-			return mask & TYPE_FILE;
-		case DT_DIR:
-			return mask & TYPE_DIR;
-	}
-
-	return 0;
+	return mask & type;
 }
 
 int parse_args(int argc, char *argv[], struct args *args)

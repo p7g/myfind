@@ -14,6 +14,5 @@ struct args {
 
 int parse_args(int argc, char *argv[], struct args *args);
 int file_type_p(int type, int mask);
-int mask_from_mode_t(mode_t mode);
 
 #endif
