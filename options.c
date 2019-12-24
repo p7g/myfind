@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 
 #include "options.h"
+#include "file_type.h"
 
 static int parse_types(const char *types, struct args *args)
 {
@@ -30,25 +31,16 @@ static int parse_types(const char *types, struct args *args)
 		}
 	}
 
-	args->file_type = mask;
+	args->file_type_mask = mask;
 
 	return 0;
-}
-
-int file_type_p(int type, int mask)
-{
-	/* If no options are specified, do no filtering */
-	if (!mask)
-		return 1;
-
-	return mask & type;
 }
 
 int parse_args(int argc, char *argv[], struct args *args)
 {
 	char opt;
 
-	args->file_type = 0;
+	args->file_type_mask = 0;
 	args->directory = NULL;
 
 	while ((opt = getopt(argc, argv, "t:")) != -1) {

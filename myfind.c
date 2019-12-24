@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 
 #include "dir_stack.h"
+#include "file_type.h"
 #include "options.h"
 #include "paths.h"
 
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
 	while (stack) {
 		current = dir_stack_pop(&stack);
 
-		if (file_type_p(current->file_type, args.file_type))
+		if (file_type_p(current->file_type, args.file_type_mask))
 			printf("%s\n", current->name);
 
 		if (current->file_type & TYPE_DIR) {
