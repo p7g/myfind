@@ -5,7 +5,14 @@
 #include <string.h>
 
 #include "dir_stack.h"
+#include "options.h"
 #include "paths.h"
+
+static void usage()
+{
+	fprintf(stderr, "USAGE:\n\tmyfind DIR [OPTS]\n");
+	exit(1);
+}
 
 int main(int argc, char *argv[])
 {
@@ -13,17 +20,15 @@ int main(int argc, char *argv[])
 	struct dirent *dir;
 	dir_stack *stack;
 	char *joined, *current;
+	struct args args;
 
-	if (argc < 2) {
-		printf("USAGE:\n\tmyfind DIR [OPTS]\n");
-		exit(1);
-	}
+	if (parse_args(argc, argv, &args))
+		usage();
 
-	stack = dir_stack_new(argv[1]);
+	stack = dir_stack_new(args.directory);
 
 	while (stack) {
 		dirp = opendir(stack->name);
-
 		current = dir_stack_pop(&stack);
 
 		if (dirp == NULL) {
@@ -34,13 +39,11 @@ int main(int argc, char *argv[])
 		while ((dir = readdir(dirp))) {
 			joined = path_join(current, dir->d_name);
 
-			if (dir->d_type == DT_DIR) {
-				if (exclude_p(dir->d_name))
-					continue;
+			if (dir->d_type == DT_DIR && !exclude_p(dir->d_name))
 				dir_stack_push(&stack, joined);
-			} else {
+
+			if (file_type_p(dir->d_type, args.file_type))
 				printf("%s\n", joined);
-			}
 
 			free(joined);
 		}
