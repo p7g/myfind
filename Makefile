@@ -2,13 +2,15 @@ CFLAGS=-ansi -Wall -pedantic
 
 INCLUDES=-I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
 
-myfind: bin *.c
-	$(CC) $(CFLAGS) $(INCLUDES) -g -o bin/myfind *.c
+all: clean myfind
+
+myfind: bin src/*.c
+	$(CC) $(CFLAGS) $(INCLUDES) -g -o bin/myfind src/*.c
 
 bin:
 	mkdir bin
 
 clean:
-	rm bin/*
+	rm -rf bin
 
-.PHONY: clean
+.PHONY: all clean
