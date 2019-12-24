@@ -6,16 +6,13 @@
 
 struct dir_stack *dir_stack_new(const char *name)
 {
-	static char path_buf[PATH_MAX];
 	struct dir_stack *new;
 	size_t len;
 
-	realpath(name, path_buf);
-	len = strlen(path_buf);
-
+	len = strlen(name);
 	new = malloc(sizeof(struct dir_stack));
 	new->name = malloc(len + 1);
-	strncpy(new->name, path_buf, len);
+	strncpy(new->name, name, len);
 	new->name[len] = '\0';
 	new->next = NULL;
 

@@ -39,7 +39,10 @@ int main(int argc, char *argv[])
 		while ((dir = readdir(dirp))) {
 			joined = path_join(current, dir->d_name);
 
-			if (dir->d_type == DT_DIR && !exclude_p(dir->d_name))
+			if (exclude_p(dir->d_name))
+				continue;
+
+			if (dir->d_type == DT_DIR)
 				dir_stack_push(&stack, joined);
 
 			if (file_type_p(dir->d_type, args.file_type))
