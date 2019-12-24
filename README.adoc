@@ -1,0 +1,9 @@
+= myfind
+
+Prints a bunch of file names to the console, separated by newlines.
+
+== Options
+
+`-t [fld]`:: Filter by types of files. Currently supports `f` for regular
+files, `l` for links, and `d` for directories. These can be combined in an
+arbitrary order like `fld` (which is the same as specifying nothing).
