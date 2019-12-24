@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "dir_stack.h"
 #include "options.h"
@@ -21,11 +22,23 @@ int main(int argc, char *argv[])
 	dir_stack *stack;
 	char *joined, *current;
 	struct args args;
+	struct stat statbuf;
 
 	if (parse_args(argc, argv, &args))
 		usage();
 
 	stack = dir_stack_new(args.directory);
+
+	if (-1 == stat(args.directory, &statbuf)) {
+		perror("stat");
+		return 1;
+	}
+
+	if (file_type_p(mask_from_mode_t(statbuf.st_mode), args.file_type))
+		printf("%s\n", args.directory);
+
+	if (!S_ISDIR(statbuf.st_mode))
+		return 0;
 
 	while (stack) {
 		dirp = opendir(stack->name);

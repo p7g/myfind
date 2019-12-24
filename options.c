@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "options.h"
 
@@ -30,6 +31,20 @@ static int parse_types(const char *types, struct args *args)
 	}
 
 	args->file_type = mask;
+
+	return 0;
+}
+
+int mask_from_mode_t(mode_t mode)
+{
+	switch (mode & S_IFMT) {
+		case S_IFDIR:
+			return TYPE_DIR;
+		case S_IFREG:
+			return TYPE_FILE;
+		case S_IFLNK:
+			return TYPE_LINK;
+	}
 
 	return 0;
 }
