@@ -10,7 +10,7 @@
 #include "options.h"
 #include "paths.h"
 
-static void usage()
+static void __attribute__((noreturn)) usage()
 {
 	fprintf(stderr, "USAGE:\n\tmyfind DIR [OPTS]\n");
 	exit(1);

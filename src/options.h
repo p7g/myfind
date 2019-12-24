@@ -4,8 +4,8 @@
 #include <sys/stat.h>
 
 struct args {
-	int file_type_mask;
 	char *directory;
+	int file_type_mask;
 };
 
 int parse_args(int argc, char *argv[], struct args *args);

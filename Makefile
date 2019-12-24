@@ -1,4 +1,4 @@
-CFLAGS=-ansi -Wall -pedantic
+CFLAGS=-ansi -Wall -Wextra -pedantic
 
 INCLUDES=-I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
 

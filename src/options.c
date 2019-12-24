@@ -10,7 +10,8 @@
 
 static int parse_types(const char *types, struct args *args)
 {
-	size_t len, i, mask;
+	size_t len, i;
+	int mask;
 
 	len = strlen(types);
 	mask = 0;
@@ -38,7 +39,7 @@ static int parse_types(const char *types, struct args *args)
 
 int parse_args(int argc, char *argv[], struct args *args)
 {
-	char opt;
+	int opt;
 
 	args->file_type_mask = 0;
 	args->directory = NULL;

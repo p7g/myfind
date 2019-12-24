@@ -4,9 +4,9 @@
 #include <sys/stat.h>
 
 typedef struct dir_stack {
+	struct dir_stack *next;
 	char *name;
 	int file_type;
-	struct dir_stack *next;
 } dir_stack;
 
 void dir_stack_free(dir_stack *stack);
